@@ -124,7 +124,6 @@
         </div>
 
       </van-form>
-      <input id="s" type="file" value="shangchauan">
     </section>
     <!--<footer v-show="hideshow">-->
     <!--<span @click.stop="signIn">去登录</span>-->
@@ -307,6 +306,7 @@
           }
         ],
         result: [],
+        timer: null,
       }
     },
     methods: {
@@ -368,7 +368,9 @@
           return
         }
         http.post(`${urls.sendSmsCode}?mobile=${formDatas.mobile}`, {}).then(res => {
+
           if (res.success) {
+
             this.timer = window.setInterval(() => {
               if (this.codeNum <= 1) {
                 window.clearInterval(this.timer);
@@ -381,6 +383,7 @@
                 this.buttonCode = `${this.codeNum}s`;
               }
             }, 1000);
+
           }
         }).catch(err => {
 
@@ -388,11 +391,7 @@
       },
 
       afterRead(item) { // 图片上传
-        let s = document.getElementById('s');
-        if (s){
-          console.log(s.files[0]);
-        }
-        console.log(item.value[0]);
+
         if (item.value.length > 0) {
           let params = {
             base64: item.value[0].content,
@@ -401,23 +400,23 @@
           };
           item.value[0].status = 'uploading';
           item.value[0].message = '上传中...';
-          // http.post(urls.upload, params).then(res => {
-          //   if (res.success) {
-          //     item.value[0].status = '';
-          //     if (item.eName == 'idcard') {
-          //       this.idcard = res.data.realFileName
-          //     }
-          //     if (item.eName == 'bizlice') {
-          //       this.bizlice = res.data.realFileName
-          //     }
-          //   } else {
-          //     item.value[0].status = 'failed';
-          //     item.value[0].message = '上传失败';
-          //   }
-          //
-          // }).catch(err => {
-          //
-          // })
+          http.post(urls.upload, params).then(res => {
+            if (res.success) {
+              item.value[0].status = '';
+              if (item.eName == 'idcard') {
+                this.idcard = res.data.realFileName
+              }
+              if (item.eName == 'bizlice') {
+                this.bizlice = res.data.realFileName
+              }
+            } else {
+              item.value[0].status = 'failed';
+              item.value[0].message = '上传失败';
+            }
+
+          }).catch(err => {
+
+          })
         }
       },
 

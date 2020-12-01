@@ -17,9 +17,6 @@
               :placeholder="item.placeholder"
               :rules="item.rule"
             >
-              <template v-if="item.isButton" #button>
-                <van-button @click="sendCode" size="small" native-type="button" type="default">发送验证码</van-button>
-              </template>
             </van-field>
 
           </template>
@@ -34,9 +31,6 @@
               :placeholder="item.placeholder"
               :rules="item.rule"
             >
-              <template v-if="item.isButton" #button>
-                <van-button @click="sendCode" size="small" native-type="button" type="default">发送验证码</van-button>
-              </template>
             </van-field>
 
           </template>
