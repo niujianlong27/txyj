@@ -242,9 +242,9 @@
           if (res.success) {
             // this.rankList = res.data.rank || [];
             this.topThree = [];
-            this.rankList[1] && this.rankList.push(this.rankList[1]);
-            this.rankList[0] && this.rankList.push(this.rankList[0]);
-            this.rankList[2] && this.rankList.push(this.rankList[2]);
+            this.rankList[1] && this.topThree.push(this.rankList[1]);
+            this.rankList[0] && this.topThree.push(this.rankList[0]);
+            this.rankList[2] && this.topThree.push(this.rankList[2]);
             console.log(this.topThree)
           }
           //

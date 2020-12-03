@@ -76,7 +76,6 @@
       getReward(){
         http.get(urls.queryRebate,{}).then(res => {
           if (res.success){
-            // C:\Program Files\Java\jre1.8.0_261\bin
           }
         }).catch(err => {
 

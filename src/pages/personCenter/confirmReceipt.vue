@@ -5,11 +5,7 @@
       <section>
         <p>{{defaultConsignee.name}} {{defaultConsignee.tel}} </p>
         <van-cell v-if="defaultConsignee.province" :border="false"
-                  :title="defaultConsignee.province + defaultConsignee.city + defaultConsignee.area"/>
-        <!--<p v-if="defaultConsignee.isDefault" class="red">-->
-        <!--<van-icon name="passed"/>-->
-        <!--已设为默认-->
-        <!--</p>-->
+                  :title="defaultConsignee.wholeAddressInfo"/>
       </section>
 
 
@@ -117,7 +113,7 @@
     methods: {
       onSubmit() {//
         if (this.buttonText == '确认收货') {
-          let orderSn = this.$route.query.orderSn
+          let orderSn = this.$route.query.orderSn;
           http.post(`${urls.confirmOrderSn}/${orderSn}`, {}).then(res => {
 
           }).catch(err => {

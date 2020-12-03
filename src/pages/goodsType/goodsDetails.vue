@@ -57,7 +57,8 @@
         </p>
         <div class="scroll">
           <van-grid class="grid" :border="false" :column-num="20">
-            <van-grid-item class="tab-grid" @click="clickSim('/goodsDetails',item.id)" v-for="(item,index) in typeList" :key="index">
+            <van-grid-item class="tab-grid" @click="clickSim('/goodsDetails',item.id)" v-for="(item,index) in typeList"
+                           :key="index">
               <img :src="item.pic | setImg" alt="">
               <div class="tabDiv">
                 <p class="textLeft">
@@ -73,8 +74,8 @@
 
     <footer>
       <div class="right">
-        <span class="left" @click.stop="showPopup == true">加入购物车</span>
-        <span class="left" @click.stop="showPopup == true">立即购买</span>
+        <span class="left" @click.stop="addCart">加入购物车</span>
+        <span class="left" @click.stop="nowBuy">立即购买</span>
       </div>
     </footer>
 
@@ -105,7 +106,7 @@
         <van-stepper button-size="32px" input-width="40px" v-model="goodsValue" integer/>
       </section>
 
-      <van-button @click="addCart" type="primary" round color="#2A91F0" block>加入购物车</van-button>
+      <van-button @click="Submit" type="primary" round color="#2A91F0" block>{{popupText}}</van-button>
     </van-popup>
 
 
@@ -146,8 +147,12 @@
     },
     data() {
       return {
+        popupText: '',
         skuIndex: null, // 规格索引
-        skuObj: {}, //  选择规格详情
+        skuObj: {
+          price: '--',
+          codeName: '--'
+        }, //  选择规格详情
         goodsValue: 1,//购买数量
         showPopup: false,
         showVideo: false,  // 视频展示
@@ -162,10 +167,11 @@
     },
     methods: {
 
-      clickSim(url,id) { // 跳转路由
-        if (id){
+
+      clickSim(url, id) { // 跳转路由
+        if (id) {
           this.$router.push({path: url, query: {id: id}})
-        }else{
+        } else {
           this.$router.push({path: url})
         }
       },
@@ -213,18 +219,34 @@
         this.skuObj = item;
       },
 
-      addCart() { // 加入购物车
-        let params = {};
-        params.count = this.goodsValue;
-        params.idGoods = this.skuObj.idGoods;
-        params.idSku = this.skuObj.id;
-        http.post(urls.addCart, params).then(res => {
-          if (res.success) {
-            Toast.success('购物车添加成功！')
-          }
-        }).catch(err => {
 
-        })
+      nowBuy() {  // 立即购买
+        this.showPopup = true;
+        this.popupText = '立即购买'
+      },
+
+      addCart() { // 加入购物车
+        this.showPopup = true;
+        this.popupText = '加入购物车';
+      },
+
+      Submit() {
+        if (this.popupText == '加入购物车') {
+          let params = {};
+          params.count = this.goodsValue;
+          params.idGoods = this.skuObj.idGoods;
+          params.idSku = this.skuObj.id;
+          http.post(urls.addCart, params).then(res => {
+            if (res.success) {
+              Toast.success('购物车添加成功！')
+            }
+          }).catch(err => {
+
+          })
+        } else {
+
+        }
+
       },
 
 

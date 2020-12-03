@@ -6,7 +6,7 @@
       <section>
         <p>{{defaultConsignee.name}} {{defaultConsignee.tel}} </p>
         <van-cell v-if="defaultConsignee.province" :border="false"
-                  :title="defaultConsignee.province + defaultConsignee.city + defaultConsignee.area"
+                  :title="defaultConsignee.wholeAddressInfo"
                   is-link @click="toPath('/receiptAddress',{from: true})"/>
         <p v-if="defaultConsignee.isDefault" class="red">
           <van-icon name="passed"/>
@@ -69,7 +69,7 @@
     </main>
     <footer>
       <van-submit-bar button-color="#2A91F0" :decimal-length="2" :label="titleNume" :price="totalPrice"
-                      button-text="提交订单" @submit="onSubmit">
+                      :loading="btnLoading" button-text="提交订单" @submit="onSubmit">
       </van-submit-bar>
     </footer>
   </div>
@@ -119,6 +119,7 @@
     },
     data() {
       return {
+        btnLoading:true,
         orderSn: '', // 订单编号
         payType: 'wechat',  // 支付方式
         code: '',//查询code
@@ -171,8 +172,10 @@
         for (let item in params) {
           formData.append(item, params[item]);
         }
+        this.btnLoading = true;
         http.post(urls.saveOrder, formData).then(res => {
           if (res.success) {
+            this.btnLoading = false;
             // this.orderSn = res.data.orderSn;
             // this.popupShow = true;
           }
