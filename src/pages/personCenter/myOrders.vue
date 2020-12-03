@@ -266,6 +266,8 @@
         setSessionStorage('tabActive', this.active)
       },
 
+      // console
+
       changeTabs() { // 切换
         this.page = 1;
         this.isLoding = true;
