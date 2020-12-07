@@ -11,7 +11,7 @@
     </div>
     <!--<van-cell is-link @click="show = true">展示弹出层</van-cell>-->
     <van-popup v-model="show">
-      <video width="355"  controls>
+      <video width="355" controls>
         <source :src="articleDetail.content | setImg " type="video/mp4">
       </video>
     </van-popup>
@@ -22,11 +22,7 @@
     <main>
       <section class="textLeft ">
         <p> 操作方法：</p>
-        <div id="details"></div>
-        <!--<p> 1.自然解冻后放入加盐、料酒、葱节的水中浸泡5-10分钟；</p>-->
-        <!--<p> 2.取出金鲳鱼用干毛巾沾干水分，加入鸡蛋清拌匀；</p>-->
-        <!--<p> 3.沾上生粉下油锅炸透捞出，等油温升高后复炸一次，捞出装盘；</p>-->
-        <!--<p> 4.锅上火加油，番茄酱、白糖翻炒后加水适量，白糖、盐、大红浙醋润二流芡，淋热油浇在炸好的鱼上。</p>-->
+        <div id="details" v-html="articleDetail.remark"></div>
       </section>
 
       <section class="video-recommend">
@@ -39,7 +35,7 @@
         </span>
         </p>
         <van-grid :border="false" :column-num="2">
-          <van-grid-item  @click.stop="details(item.id)" v-for="(item,index) in articleList" :key="index">
+          <van-grid-item @click.stop="details(item.id)" v-for="(item,index) in articleList" :key="index">
             <img :src="item.img | setImg"/>
             <p class="text">{{item.title}}</p>
           </van-grid-item>
@@ -90,23 +86,21 @@
       }
     },
     methods: {
-      toPath() { // 路由跳转
+      toPath() {
         this.$router.go(-1)
+      },  // 路由跳转
+
+      details(id) { // 跳转详情
+        this.$router.push({path: '/videoDetails', query: {id: id}});
       },
       getArticle() {
         http.get(urls.articleDetail, {id: this.$route.query.id}).then(res => {
           if (res.success) {
             this.articleDetail = res.data;
-            let Div = document.getElementById('details');  // 推荐
-            Div.innerHTML = ""; // 标签内容设置为空
-            let div = document.createElement("div"); // 创建div
-            div.innerHTML = this.articleDetail && this.articleDetail.content || " ";
-            Div.appendChild(div); // /添加到商品介绍 Div 的标签
-
-            let imgs = document.querySelectorAll("#details img"); // 获取所有的img
-            imgs.forEach(item => { // 重新设置宽度
-              item.style.width = "100%"
-            });
+            // let imgs = document.querySelectorAll("#details img"); // 获取所有的img
+            // imgs.forEach(item => { // 重新设置宽度
+            //   item.style.width = "100%"
+            // });
             this.getArticleList(this.articleDetail.author)
 
           }
@@ -115,9 +109,6 @@
         })
       },
 
-      details(id) { // 跳转详情
-        this.$router.push({path:'/videoDetails',query:{id:id}});
-      },
 
       getArticleList(author) { // 查询视频
         let params = {
@@ -129,17 +120,13 @@
             this.articleList = res.data.records;
 
           }
-
         }).catch(err => {
-
         });
-
       }
     },
     watch: {
       $route() {   // 监听路由参数变化重新加载 当前路由跳转自身改变路由后挂在的参数时使用
         this.articleDetail = [];
-        // this.isLoding = true;
         this.getArticle()
       }
     },
@@ -238,10 +225,8 @@
         }
       }
     }
-    .van-popup{
-      /*width: 355px;*/
-      /*height: 355px;*/
-
+    #details > > > img {
+      width: 100%
     }
   }
 

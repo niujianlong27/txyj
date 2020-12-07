@@ -119,7 +119,7 @@
     },
     data() {
       return {
-        btnLoading:true,
+        btnLoading: false,
         orderSn: '', // 订单编号
         payType: 'wechat',  // 支付方式
         code: '',//查询code
@@ -176,6 +176,7 @@
         http.post(urls.saveOrder, formData).then(res => {
           if (res.success) {
             this.btnLoading = false;
+            this.$router.push({path: '/myOrders', query: {index: 1}})
             // this.orderSn = res.data.orderSn;
             // this.popupShow = true;
           }
@@ -206,7 +207,6 @@
                 if (channels[i].id == 'wxpay') {  // 获取支付通道 ，微信支付通道
                   plus.payment.request(channels[i], res.data, function (result) { // 提交支付调用微信支付
                     plus.nativeUI.alert("支付成功！", function () {
-                      // back();
                       this.$router.push({path: '/paySuccess', query: {orderSn: this.orderSn}})
 
                     });
@@ -217,7 +217,6 @@
                 }
               }
             }, function (e) {
-              // plus.nativeUI.alert("支付失败：" + e.message);
             });
 
           } else {
@@ -250,7 +249,6 @@
                 }
               }
             }, function (e) {
-              // plus.nativeUI.alert("支付失败：" + e.message);
             });
 
           } else {
@@ -291,10 +289,6 @@
         })
       },
 
-      plusReady() {
-        // 获取支付通道
-
-      }
     },
     created() {
 

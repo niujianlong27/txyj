@@ -3,11 +3,14 @@
     <!--个人中心-->
     <header>
       <section>
-        <div>
+        <div v-if="userInfo">
           <p>
             {{userInfo.nickName}}
           </p>
           <p>{{userInfo.mobile}}</p>
+        </div>
+        <div v-else>
+          <span>去登录</span> / <span>去注册</span>
         </div>
         <div>
 
@@ -78,7 +81,9 @@
         show: false,//登出弹框
         show2: false,//登出弹框
         isLogin: false,
-        userInfo: {},
+        userInfo: {
+          nickName:''
+        },
         myOrders: [
           {
             src: require('../../assets/daifukuan.png'),

@@ -29,7 +29,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <p>{{item.sku.codeName}}</p>
+                        <!--<p>{{item.sku.codeName || ''}}</p>-->
                         <p><span>¥{{item.price}} </span> <span>x {{item.count}}</span></p>
                       </div>
                     </section>
@@ -68,14 +68,14 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <p>{{item.sku.codeName}}</p>
+                        <!--<p>{{item.sku.codeName || ''}}</p>-->
                         <p><span>¥{{item.price}} </span> <span>x {{item.count}}</span>
 
                         </p>
                       </div>
                     </section>
                     <p style="margin-bottom: 5px" class="over">     <span class="takeOver">
-                           <span @click.stop="confirmReceipt(data,'去支付')">去支付</span>
+                           <!--<span @click.stop="confirmReceipt(data,'去支付')">去支付</span>-->
                          </span></p>
                   </section>
                 </template>
@@ -112,7 +112,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <p>{{item.sku.codeName}}</p>
+                        <!--<p>{{item.sku.codeName || ''}}</p>-->
                         <p><span>¥{{item.price}} </span> <span>x {{item.count}}</span></p>
                       </div>
                     </section>
@@ -151,7 +151,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <p>{{item.sku.codeName}}</p>
+                        <!--<p>{{item.sku.codeName || ''}}</p>-->
                         <p class="over"><span>¥{{item.price}} </span> <span>x {{item.count}}</span>
                           <span class="takeOver">
                             <span @click.stop="returnGoods(item.goods.id,item.count,data.id,data.orderSn)">申请退货</span>
@@ -200,7 +200,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <p>{{item.sku.codeName}}</p>
+                        <!--<p>{{item.sku.codeName}}</p>-->
                         <p class="over"><span>¥{{item.price}} </span> <span>x {{item.count}}</span>
                           <span class="takeOver">
                             <span @click.stop="returnGoods(item.goods.id,item.count,data.id,data.orderSn)">申请退货</span>
@@ -257,7 +257,7 @@
     },
     methods: {
       confirmReceipt(data,text) {
-        setSessionStorage('tabActive', this.active)
+        setSessionStorage('tabActive', this.active);
         this.$router.push({path: '/confirmReceipt', query: {footer: true, orderSn: data.orderSn, text: text}})
       },
 

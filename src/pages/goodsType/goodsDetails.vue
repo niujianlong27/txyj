@@ -87,16 +87,16 @@
         <p class="textLeft">
           <span class="red"> ￥{{skuObj.price}}</span>
           <span>已选：{{skuObj.codeName}}</span>
-          <span>配送至 宝山区漠河路100弄</span>
+          <span>配送至 {{defaultConsignee.wholeAddressInfo}}</span>
         </p>
       </section>
       <section>
         <h4>配送区域</h4>
-        <van-cell :border="false" icon="location-o" title="上海市宝山区漠河路" is-link/>
-        <p>隔日达·现在下单，预计7月3日送达</p>
+        <van-cell :border="false" icon="location-o" :title="defaultConsignee.wholeAddressInfo" is-link/>
+        <p>隔日达·现在下单</p>
       </section>
 
-      <section>
+      <section v-if="skus.length > 0">
         <h4>选择规格</h4>
         <span :class="{sku : skuIndex == index}" @click="choodeSku(item,index)" v-for="(item,index) in skus">{{item.codeName}}</span>
       </section>
@@ -147,7 +147,8 @@
     },
     data() {
       return {
-        popupText: '',
+        defaultConsignee: {}, // 收货地址信息
+        popupText: '', // 按钮名称
         skuIndex: null, // 规格索引
         skuObj: {
           price: '--',
@@ -185,18 +186,40 @@
         http.get(`${urls.goods}/${id}`, {}).then(res => {
           if (res.success) {
             this.goodsDetails = res.data.goods;
-            this.getArticleList(this.goodsDetails.category.name)
+            this.getArticleList(this.goodsDetails.category.name);
             let id = this.goodsDetails.category.pid;
-            this.getRecommend(id) //同类商品推荐
+            this.getRecommend(id) ;//同类商品推荐
+
             this.skus = res.data.skus || [];
+            if ( this.skus.length  == 0) {
+              this.skuObj.price= this.goodsDetails.price
+            }
             this.skus = forEach(item => {
               item.codeName = item.codeName.replace(/,/gim, " ");
             });
+
           }
         }).catch(err => {
 
         })
 
+      },
+
+      getAddress() { // 查询地址
+        http.get(urls.queryAddress, {}).then(res => {
+          this.isLoding = false;
+          if (res.success) {
+            let addressData = res.data || [];
+            addressData.forEach(item => {
+              if (item.isDefault) {
+                this.defaultConsignee = item;
+                return
+              }
+            });
+          }
+        }).catch(err => {
+
+        })
       },
 
       getRecommend(id) { // 商品推荐
@@ -219,7 +242,6 @@
         this.skuObj = item;
       },
 
-
       nowBuy() {  // 立即购买
         this.showPopup = true;
         this.popupText = '立即购买'
@@ -230,11 +252,11 @@
         this.popupText = '加入购物车';
       },
 
-      Submit() {
+      Submit() { //提交订单
         if (this.popupText == '加入购物车') {
           let params = {};
           params.count = this.goodsValue;
-          params.idGoods = this.skuObj.idGoods;
+          params.idGoods = this.$route.query.id;
           params.idSku = this.skuObj.id;
           http.post(urls.addCart, params).then(res => {
             if (res.success) {
@@ -269,6 +291,7 @@
     created() {
       let id = this.$route.query.id;
       this.getDetails(id); // 查询订单详情
+      this.getAddress()
     },
 
 

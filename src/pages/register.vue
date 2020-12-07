@@ -85,14 +85,21 @@
             </van-field>
           </template>
 
-          <template v-if="item.type == 'uploader'">
+          <template v-if="item.type == 'uploader1'">
             <van-field :name="item.eName" :rules="item.rule" :label="item.cName">
               <template #input>
-                <van-uploader :after-read="afterRead(item)" :max-count="1" v-model="item.value"/>
+                <van-uploader :after-read="idafterRead" :max-count="1" v-model="item.value"/>
               </template>
             </van-field>
           </template>
 
+          <template v-if="item.type == 'uploader2'">
+            <van-field :name="item.eName" :rules="item.rule" :label="item.cName">
+              <template #input>
+                <van-uploader :after-read="biafterRead" :max-count="1" v-model="item.value"/>
+              </template>
+            </van-field>
+          </template>
 
           <template v-if="item.type == 'select'">
             <van-field
@@ -267,22 +274,23 @@
           },
           {
             required: true,
-            cName: '营业执照',
-            eName: 'bizlice',
-            type: 'uploader',
-            value: [],
-            placeholder: '请上传营业执照',
-            rule: [{required: false, message: '请上传营业执照'}]
-          },
-          {
-            required: true,
             cName: '身份证',
             eName: 'idcard',
-            type: 'uploader',
+            type: 'uploader1',
             value: [],
             placeholder: '请上传身份证',
             rule: [{required: false, message: '请上传身份证'}]
           },
+          {
+            required: true,
+            cName: '营业执照',
+            eName: 'bizlice',
+            type: 'uploader2',
+            value: [],
+            placeholder: '请上传营业执照',
+            rule: [{required: false, message: '请上传营业执照'}]
+          },
+
 
         ],
         list: [
@@ -390,35 +398,53 @@
         });
       },
 
-      afterRead(item) { // 图片上传
+      idafterRead(item) { // 图片上传
+        let params = {
+          base64: item.content,
+          name: item.file.name,
+          type: item.file.type
+        };
+        item.status = 'uploading';
+        item.message = '上传中...';
+        http.post(urls.upload, params).then(res => {
+          if (res.success) {
+            item.status = '';
+            this.idcard = res.data.realFileName
+          } else {
+            item.status = 'failed';
+            item.message = '上传失败';
+          }
+        }).catch(err => {
 
-        if (item.value.length > 0) {
-          let params = {
-            base64: item.value[0].content,
-            name: item.value[0].file.name,
-            type: item.value[0].file.type
-          };
-          item.value[0].status = 'uploading';
-          item.value[0].message = '上传中...';
-          http.post(urls.upload, params).then(res => {
-            if (res.success) {
-              item.value[0].status = '';
-              if (item.eName == 'idcard') {
-                this.idcard = res.data.realFileName
-              }
-              if (item.eName == 'bizlice') {
-                this.bizlice = res.data.realFileName
-              }
-            } else {
-              item.value[0].status = 'failed';
-              item.value[0].message = '上传失败';
-            }
+        });
 
-          }).catch(err => {
-
-          })
-        }
       },
+
+
+      biafterRead(item) { // 图片上传
+        let params = {
+          base64: item.content,
+          name: item.file.name,
+          type: item.file.type
+        };
+        item.status = 'uploading';
+        item.message = '上传中...';
+        http.post(urls.upload, params).then(res => {
+          if (res.success) {
+            item.status = '';
+            this.bizlice = res.data.realFileName
+          } else {
+            item.status = 'failed';
+            item.message = '上传失败';
+          }
+        }).catch(err => {
+
+        });
+
+      },
+
+
+
 
       pickConfirm(values, item) { // 选择框确定按钮
         item.value = `${values[0].name}${values[1].name}${values[2].name}`;
