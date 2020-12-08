@@ -24,7 +24,7 @@
                   <div>
                     <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                     </p>
-                    <p>{{item.sku.codeName}}</p>
+                    <p>{{item.sku && item.sku.codeName}}</p>
                     <p class="over"><span>¥ {{item.price}} </span> <span>x {{item.count}}</span></p>
                   </div>
                 </section>

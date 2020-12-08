@@ -29,7 +29,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <!--<p>{{item.sku.codeName || ''}}</p>-->
+                        <p>{{item.sku && item.sku.codeName}}</p>
                         <p><span>¥{{item.price}} </span> <span>x {{item.count}}</span></p>
                       </div>
                     </section>
@@ -68,7 +68,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <!--<p>{{item.sku.codeName || ''}}</p>-->
+                        <p>{{item.sku && item.sku.codeName }}</p>
                         <p><span>¥{{item.price}} </span> <span>x {{item.count}}</span>
 
                         </p>
@@ -112,7 +112,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <!--<p>{{item.sku.codeName || ''}}</p>-->
+                        <p>{{item.sku && item.sku.codeName}}</p>
                         <p><span>¥{{item.price}} </span> <span>x {{item.count}}</span></p>
                       </div>
                     </section>
@@ -151,7 +151,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <!--<p>{{item.sku.codeName || ''}}</p>-->
+                        <p>{{item.sku && item.sku.codeName}}</p>
                         <p class="over"><span>¥{{item.price}} </span> <span>x {{item.count}}</span>
                           <span class="takeOver">
                             <span @click.stop="returnGoods(item.goods.id,item.count,data.id,data.orderSn)">申请退货</span>
@@ -200,7 +200,7 @@
                       <div>
                         <p class="over"><span class="title">{{item.goods.name}}</span> <span class="right red">{{data.statusName}}</span>
                         </p>
-                        <!--<p>{{item.sku.codeName}}</p>-->
+                        <p>{{item.sku && item.sku.codeName}}</p>
                         <p class="over"><span>¥{{item.price}} </span> <span>x {{item.count}}</span>
                           <span class="takeOver">
                             <span @click.stop="returnGoods(item.goods.id,item.count,data.id,data.orderSn)">申请退货</span>
@@ -256,13 +256,16 @@
       }
     },
     methods: {
-      confirmReceipt(data,text) {
+      confirmReceipt(data, text) {
         setSessionStorage('tabActive', this.active);
         this.$router.push({path: '/confirmReceipt', query: {footer: true, orderSn: data.orderSn, text: text}})
       },
 
-      returnGoods(id, count,idOrder,orderSn) { // 申请退货
-        this.$router.push({path: '/returnInformation', query: {id: id, count: count,idOrder:idOrder,orderSn:orderSn}})
+      returnGoods(id, count, idOrder, orderSn) { // 申请退货
+        this.$router.push({
+          path: '/returnInformation',
+          query: {id: id, count: count, idOrder: idOrder, orderSn: orderSn}
+        })
         setSessionStorage('tabActive', this.active)
       },
 

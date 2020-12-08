@@ -9,11 +9,13 @@
           </p>
           <p>{{userInfo.mobile}}</p>
         </div>
-        <div v-else>
-          <span>去登录</span> / <span>去注册</span>
+        <div class="sign" v-else>
+          <span @click="Jump('/signIn')">去登录</span> / <span @click="Jump('/register')">去注册</span>
         </div>
         <div>
-
+          <p class="right">
+            <img  @click.stop="show = true" src="../../assets/Setup.png" alt="">
+          </p>
           <!--<img @click="show = true" :src="userInfo.avatar | setImg" alt="">-->
         </div>
       </section>
@@ -82,7 +84,7 @@
         show2: false,//登出弹框
         isLogin: false,
         userInfo: {
-          nickName:''
+          nickName: ''
         },
         myOrders: [
           {
@@ -165,13 +167,13 @@
         this.show2 = true;
       },
 
-      cancel(){
+      cancel() {
         this.show = false;
         this.show2 = false;
       },
       loginOut() { //退出
         http.post(urls.logout, {}).then(res => {
-          if (res.success){
+          if (res.success) {
             Toast.success('退出成功！');
             this.$router.push('/signIn')
           }
@@ -206,7 +208,10 @@
 
   .person {
     background-color: #F5F5F5;
-
+    .sign {
+      box-sizing: border-box;
+      padding: 10px;
+    }
     header {
       color: white;
       @include wh(100%, 173px);
@@ -237,8 +242,7 @@
           &:last-child {
             flex: 1;
             img {
-              @include wh(55px, 55px);
-              border-radius: 50%;
+              @include wh(18px,18px);
             }
           }
         }

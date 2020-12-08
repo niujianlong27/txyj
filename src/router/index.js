@@ -72,7 +72,7 @@ const router = new Router({
     //地址为空时跳转home页面
     {
       path: '',
-      redirect: '/signIn',
+      redirect: '/home',
     },
     //地址为空时跳转home页面
     //首页商城列表页

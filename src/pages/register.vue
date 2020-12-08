@@ -6,7 +6,7 @@
       <span @click="returnStep" v-show="stepType == 2">返回</span>
 
     </div>
-    <section v-if="stepType == 1" class="firstStep">
+    <section v-show="stepType == 1" class="firstStep">
       <van-radio-group v-model="radio">
         <van-cell-group>
           <van-cell
@@ -28,7 +28,7 @@
       <van-button color="#2A91F0" @click.stop="nextStep" type="primary" block>下一步</van-button>
     </section>
 
-    <section v-if="stepType == 2 && idType == 4" class="stepTwo">
+    <section v-show="stepType == 2 && idType == 4" class="stepTwo">
       <van-form @submit="register" ref="form">
         <template v-for="item in fromData">
           <template v-if="item.type == 'text'">
@@ -62,7 +62,7 @@
       </van-form>
     </section>
 
-    <section v-if="stepType == 2 && idType!= 4">
+    <section v-show="stepType == 2 && idType!= 4">
       <van-form @submit="register" ref="form">
         <template v-for="item in fromData2">
           <template v-if="item.type == 'text'">
@@ -85,18 +85,11 @@
             </van-field>
           </template>
 
-          <template v-if="item.type == 'uploader1'">
-            <van-field :name="item.eName" :rules="item.rule" :label="item.cName">
-              <template #input>
-                <van-uploader :after-read="idafterRead" :max-count="1" v-model="item.value"/>
-              </template>
-            </van-field>
-          </template>
 
-          <template v-if="item.type == 'uploader2'">
+          <template v-if="item.type == 'uploader'">
             <van-field :name="item.eName" :rules="item.rule" :label="item.cName">
               <template #input>
-                <van-uploader :after-read="biafterRead" :max-count="1" v-model="item.value"/>
+                <van-uploader :after-read="afterRead(item)" :max-count="1" v-model="item.value"/>
               </template>
             </van-field>
           </template>
@@ -273,19 +266,21 @@
             rule: [{required: true, message: '请输入业务人员'}]
           },
           {
+            uploadStatus: false,
             required: true,
             cName: '身份证',
             eName: 'idcard',
-            type: 'uploader1',
+            type: 'uploader',
             value: [],
             placeholder: '请上传身份证',
             rule: [{required: false, message: '请上传身份证'}]
           },
           {
+            uploadStatus: false,
             required: true,
             cName: '营业执照',
             eName: 'bizlice',
-            type: 'uploader2',
+            type: 'uploader',
             value: [],
             placeholder: '请上传营业执照',
             rule: [{required: false, message: '请上传营业执照'}]
@@ -379,7 +374,7 @@
 
           if (res.success) {
 
-            this.timer = window.setInterval(() => {
+            this.timer = window.setInterval(() => { //启动定时器
               if (this.codeNum <= 1) {
                 window.clearInterval(this.timer);
                 this.codeNum = 60;
@@ -398,52 +393,43 @@
         });
       },
 
-      idafterRead(item) { // 图片上传
-        let params = {
-          base64: item.content,
-          name: item.file.name,
-          type: item.file.type
-        };
-        item.status = 'uploading';
-        item.message = '上传中...';
-        http.post(urls.upload, params).then(res => {
-          if (res.success) {
-            item.status = '';
-            this.idcard = res.data.realFileName
-          } else {
-            item.status = 'failed';
-            item.message = '上传失败';
+      afterRead(item) { // 图片上传
+        if (item.value.length > 0) {
+          if (!item.uploadStatus) { // 上传状态为 false 才能上传
+            let params = {
+              base64: item.value[0].content,
+              name: item.value[0].file.name,
+              type: item.value[0].file.type
+            };
+            item.value[0].status = 'uploading';
+            item.value[0].message = '上传中...';
+
+            http.post(urls.upload, params).then(res => {
+
+              if (res.success) {
+                item.uploadStatus = true;
+                item.value[0].status = 'success';
+                item.value[0].message = '上传成功';
+
+                if (item.eName === 'bizlice') {
+                  this.bizlice = res.data.realFileName
+                } else {
+                  this.idcard = res.data.realFileName
+                }
+
+              } else {
+                item.value[0].status = 'failed';
+                item.value[0].message = '上传失败';
+              }
+            }).catch(err => {
+
+            })
           }
-        }).catch(err => {
 
-        });
-
+        } else {  // length 为0 ，或删除 uploadStatus改为false
+          item.uploadStatus = false;
+        }
       },
-
-
-      biafterRead(item) { // 图片上传
-        let params = {
-          base64: item.content,
-          name: item.file.name,
-          type: item.file.type
-        };
-        item.status = 'uploading';
-        item.message = '上传中...';
-        http.post(urls.upload, params).then(res => {
-          if (res.success) {
-            item.status = '';
-            this.bizlice = res.data.realFileName
-          } else {
-            item.status = 'failed';
-            item.message = '上传失败';
-          }
-        }).catch(err => {
-
-        });
-
-      },
-
-
 
 
       pickConfirm(values, item) { // 选择框确定按钮
@@ -453,6 +439,13 @@
       },
 
       returnStep() {
+        this.fromData2.forEach(item => {
+          if (item.type == 'uploader') {
+            item.value = [];
+          } else {
+            item.value = ''
+          }
+        });
         this.stepType = 1;
         this.buttonClick = false;
         this.codeNum = 60;

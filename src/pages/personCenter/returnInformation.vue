@@ -133,7 +133,7 @@
             title: '退款原因',
             type: 'select',
             key: 'colValue',
-            columns: [{values: []}],
+            columns: ['1222', '12', '3', '4', '4'],
             showPicker: false,
             value: '',
             rule: [{required: true, message: '请选择退款原因'}]
@@ -169,7 +169,7 @@
         this.$refs.form.submit(); // 触发onSubmit
       },
 
-      onSubmit2() {
+      onSubmit2() { // 提交
         let formData = this.$refs.form.getValues();
         let params = {...formData};
         params.idOrder = this.$route.query.idOrder;
@@ -200,6 +200,7 @@
       pickConfirm(item, index) {
 
       },
+
       input(value) {  // 退款数量变化
         this.eMessage = "";
         this.allPrice = mul(value, this.goodsDetails.price); // 计算退款金额

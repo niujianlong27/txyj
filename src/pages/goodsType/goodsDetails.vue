@@ -13,7 +13,14 @@
       </span>
 
       </header>
-      <img v-if="goodsDetails.pic" :src="goodsDetails.pic | setImg" alt="">
+      <!--<img v-if="goodsDetails.pic" :src="goodsDetails.pic | setImg" alt="">-->
+
+
+      <van-swipe>
+        <van-swipe-item v-for="(image, index) in images" :key="index">
+          <img :src="image | setImg" alt="">
+        </van-swipe-item>
+      </van-swipe>
     </div>
     <main>
       <div class="title">
@@ -116,7 +123,7 @@
 <script>
   import {
     Row, Cell, GoodsAction, GoodsActionIcon, GoodsActionButton, Toast, Button,
-    Lazyload, Icon, Popup, Grid, GridItem, Stepper, Sticky, Loading, SubmitBar
+    Lazyload, Icon, Popup, SwipeItem, Swipe, Grid, GridItem, Stepper, Sticky, Loading, SubmitBar
   } from 'vant';
   import Vue from 'vue';
   import urls from '../../utils/urls';
@@ -132,6 +139,8 @@
       [Button.name]: Button,
       [SubmitBar.name]: SubmitBar,
       [Row.name]: Row,
+      [Swipe.name]: Swipe,
+      [SwipeItem.name]: SwipeItem,
       [Icon.name]: Icon,
       [Cell.name]: Cell,
       [Grid.name]: Grid,
@@ -147,6 +156,7 @@
     },
     data() {
       return {
+        images: [],
         defaultConsignee: {}, // 收货地址信息
         popupText: '', // 按钮名称
         skuIndex: null, // 规格索引
@@ -183,16 +193,17 @@
 
 
       getDetails(id) { // 查询详情
+        this.images = [];
         http.get(`${urls.goods}/${id}`, {}).then(res => {
           if (res.success) {
             this.goodsDetails = res.data.goods;
             this.getArticleList(this.goodsDetails.category.name);
             let id = this.goodsDetails.category.pid;
-            this.getRecommend(id) ;//同类商品推荐
-
+            this.getRecommend(id);//同类商品推荐
+            this.images = this.goodsDetails.gallery.split(',');
             this.skus = res.data.skus || [];
-            if ( this.skus.length  == 0) {
-              this.skuObj.price= this.goodsDetails.price
+            if (this.skus.length == 0) {
+              this.skuObj.price = this.goodsDetails.price
             }
             this.skus = forEach(item => {
               item.codeName = item.codeName.replace(/,/gim, " ");
@@ -285,13 +296,21 @@
 
         });
 
+      },
+      addReadNum(id) {
+        http.get(urls.addReadNum, {id: id}).then(res => {
+
+        }).catch(err => {
+
+        })
       }
     },
 
     created() {
       let id = this.$route.query.id;
       this.getDetails(id); // 查询订单详情
-      this.getAddress()
+      this.getAddress();
+      this.addReadNum(id);
     },
 
 
@@ -299,6 +318,7 @@
       $route() {   // 监听路由参数变化重新加载
         let id = this.$route.query.id;
         this.getDetails(id);
+        this.addReadNum(id);
       }
     }
 
@@ -314,10 +334,11 @@
       width: 100%;
       height: 300px;
       background-size: 100% 100%;
-      > img {
+      .van-swipe img {
         @include wh(100%, 300px)
       }
       header {
+        z-index: 100;
         padding-top: 10px;
         .text {
           @include sc(18px, #fff)
@@ -326,7 +347,6 @@
           position: relative;
           top: 2px;
         }
-
         width: 100%;
         position: absolute;
         display: flex;

@@ -16,7 +16,7 @@
         <div>
           <p><span class="title">{{item.goods.name}}</span></p>
           <p>{{item.title}}</p>
-          <p><span>¥{{item.price}} </span> <span>x {{item.count}}</span> <span>
+          <p><span>¥ {{item.price}} </span> <span>x {{item.count}}</span> <span>
       <van-stepper disabled integer button-size="24" v-model="item.count"/>
       </span></p>
         </div>
