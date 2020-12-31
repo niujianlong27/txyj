@@ -10,45 +10,24 @@
           <van-empty description="暂无数据"/>
         </template>
         <template v-else>
-          <van-list
-            offset="100"
-            v-model="loading"
-            :finished="finished"
-            finished-text="没有更多了"
-            @load="onLoad"
-          >
 
-            <!--<section>-->
-            <!--<p>-->
-            <!--2020-07-15-->
-            <!--</p>-->
-            <!--<div class="details">-->
-            <!--<div style="overflow: hidden">-->
-            <!--<h3 class="left">价格调整通知</h3>-->
-            <!--<span class="red right">未读</span>-->
-            <!--</div>-->
-            <!--<p>-->
-            <!--虾蟹等产品因为原因位，所以此产品针对性价格-->
-            <!--下调，原价为100，现价90-->
-            <!--</p>-->
-            <!--</div>-->
-            <!--</section>-->
-            <!--<section>-->
-            <!--<p>-->
-            <!--2020-07-15-->
-            <!--</p>-->
-            <!--<div class="details">-->
-            <!--<div style="overflow: hidden">-->
-            <!--<h3 class="left">价格调整通知</h3>-->
-            <!--<span class="red right">未读</span>-->
-            <!--</div>-->
-            <!--<p>-->
-            <!--虾蟹等产品因为原因位，所以此产品针对性价格-->
-            <!--下调，原价为100，现价90-->
-            <!--</p>-->
-            <!--</div>-->
-            <!--</section>-->
-          </van-list>
+          <section @click="toPath(item.content)" :key="item.id" v-for="item in listData">
+            <p>
+              {{item.createTime | setDate}}
+            </p>
+            <div class="details">
+              <div style="overflow: hidden">
+                <h3 class="left">{{item.title}}</h3>
+                <span class="red right">{{item.isDefault ? '已读' : '未读'}}</span>
+              </div>
+              <p class="content">
+                虾蟹等产品因为原因位，所以此产品针对性价格
+                下调，原价为100，1111111111111现价90
+                {{item.content}}
+              </p>
+            </div>
+          </section>
+          <!--</van-list>-->
         </template>
       </template>
 
@@ -103,10 +82,17 @@
       onLoad() {
 
       },
+      toPath(data) {
+        this.$router.push({
+          path: `/msgDeatils/${data}`,
+        })
+      },
+
       getMessage() {
         http.get(urls.queryByUser).then(res => {
           this.isLoding = false;
           if (res.success) {
+            this.loading = false;
             this.listData = res.data || []
           }
         }).catch(err => {

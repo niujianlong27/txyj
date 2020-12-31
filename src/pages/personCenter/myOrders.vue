@@ -273,6 +273,7 @@
 
       changeTabs() { // 切换
         this.page = 1;
+        this.finished = false;
         this.isLoding = true;
         this.orderList = [];
         this.getOrder();

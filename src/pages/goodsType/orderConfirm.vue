@@ -3,15 +3,19 @@
     <page-nav :title="'订单确认'"></page-nav>
     <main>
 
-      <section>
+      <section class="Address" v-if="defaultConsignee.name">
         <p>{{defaultConsignee.name}} {{defaultConsignee.tel}} </p>
         <van-cell v-if="defaultConsignee.province" :border="false"
                   :title="defaultConsignee.wholeAddressInfo"
                   is-link @click="toPath('/receiptAddress',{from: true})"/>
-        <p v-if="defaultConsignee.isDefault" class="red">
-          <van-icon name="passed"/>
-          已设为默认
-        </p>
+        <!--<p v-if="defaultConsignee.isDefault" class="red">-->
+          <!--<van-icon name="passed"/>-->
+          <!--已设为默认-->
+        <!--</p>-->
+      </section>
+      <section class="noAddress" v-else>
+        <van-cell  :title="'收货地址'"
+                  is-link @click="toPath('/receiptAddress',{from: true})"/>
       </section>
 
 
@@ -31,47 +35,55 @@
       <van-field v-model="message" label="备注" placeholder="请输入备注"/>
 
 
-      <van-popup class="popup" position="bottom" v-model="popupShow">
-        <p style="text-align: center;margin:0 0 16px;font-size: 20px">
-          选择支付方式
-        </p>
+      <!--<van-popup class="popup" position="bottom" v-model="popupShow">-->
+        <!--<p style="text-align: center;margin:0 0 16px;font-size: 20px">-->
+          <!--选择支付方式-->
+        <!--</p>-->
 
-        <van-radio-group v-model="payType">
-          <van-cell-group>
-            <van-cell :border="false" clickable @click="payType = 'alipay'">
-              <template #right-icon>
-                <van-radio name="alipay"/>
-              </template>
-              <template #title>
-                <van-icon size="30" :name="require('../../assets/zfbLogo.png')"/>
-                <span class="custom-title">支付宝支付</span>
-              </template>
-            </van-cell>
+        <!--<van-radio-group v-model="payType">-->
+          <!--<van-cell-group>-->
+            <!--<van-cell :border="false" clickable @click="payType = 'alipay'">-->
+              <!--<template #right-icon>-->
+                <!--<van-radio name="alipay"/>-->
+              <!--</template>-->
+              <!--<template #title>-->
+                <!--<van-icon size="30" :name="require('../../assets/zfbLogo.png')"/>-->
+                <!--<span class="custom-title">支付宝支付</span>-->
+              <!--</template>-->
+            <!--</van-cell>-->
 
-            <van-cell :border="false" clickable @click="payType = 'wechat'">
-              <template #right-icon>
-                <van-radio name="wechat"/>
-              </template>
+            <!--<van-cell :border="false" clickable @click="payType = 'wechat'">-->
+              <!--<template #right-icon>-->
+                <!--<van-radio name="wechat"/>-->
+              <!--</template>-->
 
-              <template #title>
-                <van-icon size="30" name="chat"/>
-                <span class="custom-title">微信支付</span>
-              </template>
-            </van-cell>
+              <!--<template #title>-->
+                <!--<van-icon size="30" name="chat"/>-->
+                <!--<span class="custom-title">微信支付</span>-->
+              <!--</template>-->
+            <!--</van-cell>-->
 
 
-          </van-cell-group>
-        </van-radio-group>
-        <van-button round block @click="toPay()" type="info">确认支付</van-button>
+          <!--</van-cell-group>-->
+        <!--</van-radio-group>-->
+        <!--<van-button round block @click="toPay()" type="info">确认支付</van-button>-->
 
-      </van-popup>
+      <!--</van-popup>-->
 
     </main>
     <footer>
       <van-submit-bar button-color="#2A91F0" :decimal-length="2" :label="titleNume" :price="totalPrice"
-                      :loading="btnLoading" button-text="提交订单" @submit="onSubmit">
+                      :loading="btnLoading" :disabled="disabled" button-text="提交订单" @submit="onSubmit">
       </van-submit-bar>
     </footer>
+
+    <van-popup class="popup" v-model="popupShow">
+      <p style="text-align: center;margin:0 0 15px">
+        <img src="../../assets/u217.png" alt=""> 订单提交成功
+      </p>
+      <van-button @click="toPath('/home')" type="primary">返回首页</van-button>
+      <van-button @click="toPath('/myOrders', {index: 1})" type="info">查看订单</van-button>
+    </van-popup>
   </div>
 </template>
 
@@ -119,6 +131,7 @@
     },
     data() {
       return {
+        disabled:false,
         btnLoading: false,
         orderSn: '', // 订单编号
         payType: 'wechat',  // 支付方式
@@ -162,9 +175,19 @@
 
       onSubmit() { // 提交订单
         let params = {};
+        if (!this.defaultConsignee.id){
+          Toast('请选择收货地址！');
+          return
+        }
+        if (this.chooseCart.length == 0){
+          Toast('商品不能为空！');
+          return
+        }
+
         let ids = this.chooseCart.map(item => {
           return item.id
         });
+
         params.idAddress = this.defaultConsignee.id;
         params.message = this.message;
         params.idCarts = ids.join();
@@ -172,13 +195,14 @@
         for (let item in params) {
           formData.append(item, params[item]);
         }
+
         this.btnLoading = true;
         http.post(urls.saveOrder, formData).then(res => {
           if (res.success) {
+            this.disabled = true;
             this.btnLoading = false;
-            this.$router.push({path: '/myOrders', query: {index: 1}})
             // this.orderSn = res.data.orderSn;
-            // this.popupShow = true;
+            this.popupShow = true;
           }
 
         }).catch(err => {
@@ -327,10 +351,8 @@
       text-align: left;
       &:nth-child(1) {
         margin-bottom: 15px;
-        padding: 1px 12px 10px;
-        .van-cell {
-          padding: 0;
-        }
+        padding: 10px 12px 10px;
+
         p {
           margin: 10px 0 !important;
         }
@@ -339,10 +361,10 @@
         }
         .van-cell {
           background: rgba(255, 255, 255, 1);
+          padding: 0;
         }
       }
     }
-
     .orderItem {
       padding: 15px;
       margin: 5px 0;
@@ -415,6 +437,28 @@
 
     }
   }
+  .popup {
+    width: 60%;
+    padding: 10px;
+    border-radius: 5px;
+    img {
+      @include wh(30px, 30px);
+      position: relative;
+      top: 8px;
+    }
+    p {
+      text-align: left;
+      padding: 0 5px;
+      margin: 8px 0;
+      @include sc(13px, #323233)
+    }
+    .van-button {
+      margin-top: 10px;
+      padding: 0 8px;
+      @include wh(100px, 30px);
+    }
+  }
+
 
   .color {
     color: #9D9D9D

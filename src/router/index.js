@@ -6,7 +6,7 @@ import signIn from '../pages/signIn'
 import register from '../pages/register'
 import home from '../pages/home/home';
 import moreGoods from '../pages/home/moreGoods';
-
+import msgDeatils from '../pages/home/msgDeatils';
 import myMessage from '../pages/home/myMessage';
 import shopCart from '../pages/shopCart'
 import receiptAddress from '../pages/receiptAddress'
@@ -94,6 +94,15 @@ const router = new Router({
         // keepAlive: true
       }
     },
+    {
+      path: '/msgDeatils/:content', // 消息详情
+      name: "msgDeatils",
+      component: msgDeatils,
+      meta: {
+        title: '消息详情',
+      }
+    },
+
     {
       path: '/moreGoods', //更多商品
       name: "moreGoods",

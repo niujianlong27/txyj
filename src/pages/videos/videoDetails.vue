@@ -21,7 +21,7 @@
 
     <main>
       <section class="textLeft ">
-        <p> 操作方法：</p>
+        <!--<p> 操作方法：</p>-->
         <div id="details" v-html="articleDetail.remark"></div>
       </section>
 
