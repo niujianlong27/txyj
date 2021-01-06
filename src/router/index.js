@@ -306,8 +306,19 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  if ( (from.path == '/myOrders' && to.path == '/personCenter') || (from.path == '/paySuccess' && to.path == '/home') ) {
+
+  if ((from.path == '/myOrders' && to.path == '/personCenter') || (from.path == '/paySuccess' && to.path == '/home')) {
     removeSessionStorage('tabActive');
+  }
+
+  if (getlocalStorage('token') && (to.path == '/signIn' || to.path == '/register' )) {
+    window.plus && plus.runtime.quit(); //有token 并且要去注册或登录页面那么就退出app
+    return
+  }
+
+  if (!getlocalStorage('token') && (from.path == '/signIn' || from.path == '/register' )) {
+    window.plus &&  plus.runtime.quit(); //那么就退出app
+    return
   }
 
 
@@ -322,6 +333,7 @@ router.beforeEach((to, from, next) => {
   }
   window.scrollTo(0, 0);
   // 判断该路由是否需要登录权限
+
   if (to.meta.requireAuth) {
     // if (getlocalStorage("token")) {
     next();

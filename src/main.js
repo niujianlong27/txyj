@@ -12,12 +12,19 @@ import {Notify} from 'vant';
 import vueJsonp from 'vue-jsonp'
 import Mui from 'vue-awesome-mui';
 import VueCookies from 'vue-cookies'
+import VideoPlayer from  'vue-video-player'
 
+
+require('video.js/dist/video-js.css');
+require('vue-video-player/src/custom-theme.css');
+
+
+Vue.use(VideoPlayer); // 视频插件
 Vue.use(VueCookies);
 Vue.use(Mui);
 Vue.use(vueJsonp);
-Vue.use(Notify);
-Vue.use(VueTouch, {name: 'v-touch'});
+Vue.use(Notify); // 提示信息
+Vue.use(VueTouch, {name: 'v-touch'}); // 滑动
 
 VueTouch.config.swipe = {
   threshold: 80  //设置左右滑动的距离
@@ -25,7 +32,8 @@ VueTouch.config.swipe = {
 
 Vue.config.productionTip = false;
 Vue.prototype.$http = http;
-FastClick.attach(document.body);
+
+FastClick.attach(document.body); // 多次点击问题
 
 Vue.filter('YYYY-HH-DD', function (value) {
   let arr = value.split(" ");
@@ -40,6 +48,17 @@ Vue.filter('setImg', function (value) {
 
   }
 });
+
+
+Vue.filter('setVideo', function (value) {
+  if (value && value.indexOf("http") >= 0) {
+    return value
+  } else {
+    return `http://test.tonginfo.com:8084/prod-api/file/getImgStream?&idFile=${value}`
+  }
+});
+
+// /prod-api/file/getImgStream?idFile=aa60e278b18b5cd04d66ec46489fad7a.mp4
 
 Vue.filter('fixNum', function (value) {
   if (value && !isNaN(value)) {

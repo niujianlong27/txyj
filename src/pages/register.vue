@@ -28,7 +28,7 @@
       <van-button color="#2A91F0" @click.stop="nextStep" type="primary" block>下一步</van-button>
     </section>
 
-    <section v-show="stepType == 2 && idType == 4" class="stepTwo">
+    <section v-if="stepType == 2 && idType == 4" class="stepTwo">
       <van-form @submit="register" ref="form">
         <template v-for="item in fromData">
           <template v-if="item.type == 'text'">
@@ -62,7 +62,7 @@
       </van-form>
     </section>
 
-    <section v-show="stepType == 2 && idType!= 4">
+    <section v-if="stepType == 2 && idType!= 4">
       <van-form @submit="register" ref="form">
         <template v-for="item in fromData2">
           <template v-if="item.type == 'text'">
@@ -125,9 +125,6 @@
 
       </van-form>
     </section>
-    <!--<footer v-show="hideshow">-->
-    <!--<span @click.stop="signIn">去登录</span>-->
-    <!--</footer>-->
   </div>
 
 </template>
@@ -366,6 +363,8 @@
 
       sendCode() { // 发送验证码
         let formDatas = this.$refs.form.getValues();
+        console.log(this.$refs.form.getValues());
+
         if (!formDatas.mobile) {
           Toast.fail('请输入手机号');
           return
@@ -465,6 +464,8 @@
       }
     },
     mounted() {
+      removelocalStorage("token");
+      removelocalStorage("userInfo");
       window.onresize = () => { //获取屏幕高度
         return (() => {
           this.showHeight = document.documentElement.clientHeight;

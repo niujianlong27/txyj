@@ -62,10 +62,9 @@
   import foot from '../../components/foot'
   import {Grid, GridItem, Image, Button, Cell, Toast, Popup} from 'vant';
   import {mapState, mapMutations} from 'vuex'
-  import {getlocalStorage} from "../../config/Utils";
+  import {getlocalStorage,removelocalStorage} from "../../config/Utils";
   import http from "../../utils/http";
   import urls from '../../utils/urls';
-
   export default {
     name: "personCenter",
     components: {
@@ -174,6 +173,9 @@
       loginOut() { //退出
         http.post(urls.logout, {}).then(res => {
           if (res.success) {
+            removelocalStorage("token");
+            removelocalStorage("userInfo");
+
             Toast.success('退出成功！');
             this.$router.push('/signIn')
           }

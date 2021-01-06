@@ -135,7 +135,7 @@
       getArticle() { // 查询视频
         let params = {
           page: this.page,
-          limit: 4
+          limit: 8
         };
         http.get(urls.articleList, {...params, author: ''}).then(res => {
           this.isLoding = false;
@@ -143,15 +143,12 @@
             this.loading = false;
             let list = res.data && res.data.records || [];
             this.articleList = this.articleList.concat(list);
-            console.log(this.articleList);
             if (this.articleList.length == res.data.total) {
               this.finished = true;
             }
             if (this.queryNum == 1) {
-              console.log(res.data.records.length);
               if (res.data.records.length > 4) {
                 this.recArticle = res.data.records.slice(0, 4);
-                console.log(res.data.records.slice(0, 4));
               } else {
                 this.recArticle = res.data.records
               }
@@ -159,11 +156,9 @@
             this.queryNum = 2;
 
           }
-
         }).catch(err => {
 
         });
-
       }
 
     },

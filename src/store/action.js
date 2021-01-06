@@ -20,11 +20,11 @@ export default {
     let res = await getUserinfo(state.loginForm);
     if (res.success) {
       toast.clear();
-      router.push({path: "/home"});
-      Toast.success("登录成功");
-      commit(Is_Login, true);
       setlocalStorage("token", res.data.token); // token
       setlocalStorage("userInfo", res.data.user); // 用户信息
+      Toast.success("登录成功");
+      commit(Is_Login, true);
+      router.push({path: "/home"});
     } else {
       Toast.fail(res.msg);
     }
