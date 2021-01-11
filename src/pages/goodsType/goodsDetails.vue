@@ -3,7 +3,7 @@
     <div class="bgdiv">
       <header>
           <span style="position: absolute;left: 10px">
-        <van-icon color="#fff" @click="toPath" size="18px"
+        <van-icon color="#fff" @click="Return" size="18px"
                   name="arrow-left"/>
       </span>
         <span class="text">商品详情</span>
@@ -99,7 +99,8 @@
       </section>
       <section>
         <h4>配送区域</h4>
-        <van-cell :border="false" icon="location-o" :title="defaultConsignee.wholeAddressInfo" is-link/>
+        <van-cell :border="false" icon="location-o" :title="defaultConsignee.wholeAddressInfo" is-link
+                  @click="toPath('/receiptAddress',{from: true})"/>
         <p>隔日达·现在下单</p>
       </section>
 
@@ -128,7 +129,7 @@
   import Vue from 'vue';
   import urls from '../../utils/urls';
   import http from '../../utils/http';
-  import {getlocalStorage} from "../../config/Utils";
+  import {getlocalStorage, setSessionStorage,getSessionStorage} from "../../config/Utils";
 
   Vue.use(Lazyload, {
     lazyComponent: true
@@ -187,10 +188,19 @@
         }
       },
 
-      toPath() {
+      Return() {
         this.$router.go(-1)
       },
 
+
+      toPath(url, data) { // 路由跳转
+        setSessionStorage('popupText',this.popupText);
+        if (data) {
+          this.$router.push({path: url, query: data}); //跳转地址设置
+          return
+        }
+        this.$router.push(url)
+      },
 
       getDetails(id) { // 查询详情
         this.images = [];
@@ -255,7 +265,7 @@
 
       nowBuy() {  // 立即购买
         this.showPopup = true;
-        this.popupText = '立即购买'
+        this.popupText = '立即购买';
       },
 
       addCart() { // 加入购物车
@@ -277,9 +287,8 @@
 
           })
         } else {
-
+          this.$router.push('/orderConfirm')
         }
-
       },
 
 
@@ -309,8 +318,15 @@
     created() {
       let id = this.$route.query.id;
       this.getDetails(id); // 查询订单详情
-      this.getAddress();
+
       this.addReadNum(id);
+      if (getSessionStorage('address')) {
+        this.showPopup = true;
+        this.popupText = getSessionStorage('popupText');
+        this.defaultConsignee = JSON.parse(getSessionStorage('address'))
+      } else {
+        this.getAddress();
+      }
     },
 
 

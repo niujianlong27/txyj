@@ -281,7 +281,6 @@
     mounted() {
       this.isLoding = true;
       this.getAddress();
-      console.log(Area);
     }
   }
 </script>

@@ -315,7 +315,6 @@
 
     },
     created() {
-
       this.addTotal(); // 计算价格；
       if (getSessionStorage('address')) {
         this.defaultConsignee = JSON.parse(getSessionStorage('address'))
@@ -323,7 +322,6 @@
         this.getAddress();
       }
     },
-
   }
 
 </script>

@@ -194,6 +194,7 @@
           return
         }
         this.Set_ChooseCart(this.result);
+        console.log(this.result);
         this.$router.push({path: '/orderConfirm'})
 
       },

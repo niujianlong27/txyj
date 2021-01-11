@@ -30,7 +30,7 @@ import myRanking from '../pages/personCenter/myRanking'
 import paySuccess from '../pages/personCenter/paySuccess'
 
 
-import {getlocalStorage, setSessionStorage, removeSessionStorage} from "../config/Utils";
+import {getlocalStorage, setSessionStorage, getSessionStorage, removeSessionStorage} from "../config/Utils";
 
 
 const originalPush = Router.prototype.push;
@@ -311,19 +311,18 @@ router.beforeEach((to, from, next) => {
     removeSessionStorage('tabActive');
   }
 
-  if (getlocalStorage('token') && (to.path == '/signIn' || to.path == '/register' )) {
+  if (getlocalStorage('token') && (to.path == '/signIn' || to.path == '/register')) {
     window.plus && plus.runtime.quit(); //有token 并且要去注册或登录页面那么就退出app
     return
   }
 
-  if (!getlocalStorage('token') && (from.path == '/signIn' || from.path == '/register' )) {
-    window.plus &&  plus.runtime.quit(); //那么就退出app
+  if (!getlocalStorage('token') && ((from.path == '/signIn' && to.path !== '/register') || (from.path == '/register' && to.path !== '/signIn'))) {
+    window.plus && plus.runtime.quit(); //没有token   并且那么就退出app
     return
   }
 
-
-  if (from.path == '/orderConfirm') {
-    if (!(to.path == '/receiptAddress')) { // 订单确认页面前往的不是地址设置页面，清空缓存的地址信息
+  if (getSessionStorage('address') && (from.path == '/orderConfirm' || from.path == '/goodsDetails')) {
+    if (to.path != '/receiptAddress' && to.path != '/orderConfirm') { // 订单确认页面前往的不是地址设置页面，清空缓存的地址信息
       removeSessionStorage('address');
     }
   }
