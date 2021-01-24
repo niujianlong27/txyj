@@ -47,7 +47,7 @@
 
     </section>
     <footer v-show="hideshow">
-      <van-checkbox v-model="radio">登陆前请确认登陆协议</van-checkbox>
+      <van-checkbox v-model="radio">登录前请确认登录协议</van-checkbox>
     </footer>
   </div>
 </template>

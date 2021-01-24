@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="videoRecommend">
     <div class="bgDiv">
       <p class="p-header">
     <span>
@@ -61,6 +61,7 @@
         <van-grid :border="false" :column-num="1">
           <van-grid-item class="videos" v-for="(item,index) in articleList" :key="index">
             <van-image @click.stop="details(item.id)" :src="item.img | setImg"/>
+            <!--<p class="text">{{item.title}}</p>-->
           </van-grid-item>
 
         </van-grid>
@@ -173,6 +174,10 @@
   @import 'src/style/mixin';
   @import 'src/style/common';
 
+  .videoRecommend {
+    background-color: white;
+  }
+
   .bgDiv {
     @include wh(375px, 175px);
     background-color: #2A91F0;
@@ -209,7 +214,7 @@
   }
 
   main {
-    background: #F5F5F5;
+    background: #fff;
     padding: 0 10px 50px;
     .p-title {
       overflow: hidden;
@@ -227,16 +232,13 @@
     }
     .video-recommend {
       img {
-        @include wh(165px, 113px)
+        @include wh(173px,113px);
       }
-      /*van-grid-item*/
       .van-grid-item {
         overflow: hidden;
       }
-
       /deep/ .van-grid-item__content {
         padding: 0;
-
       }
       .text {
         width: 100%;
@@ -252,11 +254,10 @@
         margin: 12px 0;
       }
     }
-
   }
-
   .videos {
-    @include wh(355px, 196px);
+    /*width: 355px;*/
+    @include wh(355px, 190px);
     .van-image {
       @include wh(100%, 100%);
     }

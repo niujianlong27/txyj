@@ -142,13 +142,20 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 margin: 3px 0;
-                &:first-child {
-                  @include sc(14px, #FFFFFF)
-                }
-                &:last-child {
-                  @include sc(12px, #FFFFFF)
-                }
               }
+
+              .title {
+                height: 19px;
+                @include sc(14px, #FFFFFF);
+                font-weight: 600;
+                line-height: 19px;
+              }
+              .brief-in {
+                @include sc(12px, #FFFFFF);
+                height: 16px;
+                line-height: 16px;
+              }
+
             }
             &:last-child {
               width: 30px;

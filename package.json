@@ -23,7 +23,8 @@
     "vue-router": "^3.0.1",
     "vue-touch": "^2.0.0-beta.4",
     "vue-video-player": "^5.0.2",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "xgplayer": "^2.17.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

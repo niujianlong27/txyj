@@ -114,7 +114,7 @@
     },
     data() {
       return {
-        badgeNum:'',// 消息条数
+        badgeNum: '',// 消息条数
         loading: false,//数据滚动加载
         finished: false,//全部加载完成
         searchValue: '',
@@ -122,6 +122,7 @@
         tabActive2: 0, // 二级分类tab标记
         limit: 3, // 每页条数
         page: 1, // 页码
+        goodsId: '',// 分类id
         icon: require('../../assets/icon-test@3x.png'),
         recList: [],// 今日推荐
         typeList: [],// 商品列表
@@ -151,17 +152,24 @@
         let arr = this.catalogList[name].children;
         if (arr && (arr.length > 0)) {
           this.typeList = [];
+          this.page = 1;
+          this.goodsId = arr[0].id;
           this.queryGoods(arr[0].id);
         }
       },
+
+
       onLoad() { // 滚动加载
         this.page += 1;
+        this.queryGoods(this.goodsId)
       },
 
       clickItem(data) { // 点击二级分类 data当前 一级分类的数据 children 是二级数据
         let arr = data.children;
         if (arr && (arr.length > 0)) {
           this.typeList = [];
+          this.page = 1;
+          this.goodsId = arr[this.tabActive2].id;
           this.queryGoods(arr[this.tabActive2].id);
         }
       },
@@ -170,14 +178,16 @@
       },
 
       queryGoods(id) { //根据分类id 查询商品
+        console.log(121);
+        console.log(id);
         http.get(urls.queryGoods, {
           idCategory: id,
           page: this.page,
-          limit: this.limit
+          limit:10
         }).then(res => {
           this.loading = false;
           if (res.success) {
-            let list = res.data.records || []
+            let list = res.data.records || [];
             this.typeList = this.typeList.concat(list);
             if (res.data.total == this.typeList.length) {
               this.finished = true
@@ -203,23 +213,28 @@
         }).catch(err => {
 
         })
+      },
+
+      getList() {
+        http.get(urls.list, {}).then(res => { // 查询商品分类
+            if (res.success) {
+              this.catalogList = res.data || [];
+              this.goodsId = this.catalogList[0].children[0].id;
+              this.queryGoods(this.goodsId);
+            }
+          }
+        ).catch(err => {
+
+        });
       }
     },
+
     computed: {
       ...mapState(['active', 'catalog']),
     },
 
     created() {
-      http.get(urls.list, {}).then(res => { // 查询商品分类
-          if (res.success) {
-            this.catalogList = res.data || [];
-            let id = this.catalogList[0].children[0].id;
-            this.queryGoods(id);
-          }
-        }
-      ).catch(err => {
-
-      });
+      this.getList();
       this.getRecommend();
     },
     activated() {
@@ -320,11 +335,15 @@
           }
 
           .title {
+            height: 19px;
             @include sc(14px, #173143);
             font-weight: 600;
+            line-height: 19px;
           }
           .brief-in {
             @include sc(12px, #B3B3B3);
+            height: 16px;
+            line-height: 16px;
           }
         }
       }

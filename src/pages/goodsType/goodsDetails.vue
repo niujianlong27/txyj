@@ -129,7 +129,7 @@
   import Vue from 'vue';
   import urls from '../../utils/urls';
   import http from '../../utils/http';
-  import {getlocalStorage, setSessionStorage,getSessionStorage} from "../../config/Utils";
+  import {getlocalStorage, setSessionStorage, getSessionStorage} from "../../config/Utils";
 
   Vue.use(Lazyload, {
     lazyComponent: true
@@ -194,7 +194,7 @@
 
 
       toPath(url, data) { // 路由跳转
-        setSessionStorage('popupText',this.popupText);
+        setSessionStorage('popupText', this.popupText);
         if (data) {
           this.$router.push({path: url, query: data}); //跳转地址设置
           return
@@ -274,6 +274,12 @@
       },
 
       Submit() { //提交订单
+        if (this.skus.length > 0) {
+          if (this.skuIndex == null) {
+            Toast.fail('请选择规格！');
+            return
+          }
+        }
         if (this.popupText == '加入购物车') {
           let params = {};
           params.count = this.goodsValue;
@@ -318,9 +324,8 @@
     created() {
       let id = this.$route.query.id;
       this.getDetails(id); // 查询订单详情
-
       this.addReadNum(id);
-      if (getSessionStorage('address')) {
+      if (getSessionStorage('address')) { // 有地址缓存
         this.showPopup = true;
         this.popupText = getSessionStorage('popupText');
         this.defaultConsignee = JSON.parse(getSessionStorage('address'))
@@ -569,7 +574,8 @@
           margin: 6px 0;
           text-align: center;
           display: block;
-          @include wh(60%, 36px);
+          padding-left: 10px;
+          @include wh(100%, 36px);
           background-color: #F3F3F3;
         }
       }

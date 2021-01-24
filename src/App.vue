@@ -70,8 +70,6 @@
     touch-action: auto;
   }
 
-
-
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif, PingFangSC-Medium, PingFang SC;
     -webkit-font-smoothing: antialiased;

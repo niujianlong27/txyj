@@ -58,7 +58,6 @@ Vue.filter('setVideo', function (value) {
   }
 });
 
-// /prod-api/file/getImgStream?idFile=aa60e278b18b5cd04d66ec46489fad7a.mp4
 
 Vue.filter('fixNum', function (value) {
   if (value && !isNaN(value)) {
